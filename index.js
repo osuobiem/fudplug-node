@@ -37,10 +37,21 @@ socket.connect((io) => {
   });
 
   // Socket Routes
+
+  // Likes Count Endpoint
   app.post("/send-likes-count", (req, res) => {
     io.socket.broadcast.emit("like-count", {
       postId: req.body.post_id,
       likesCount: req.body.likes_count,
+    });
+
+    res.send();
+  });
+
+  // New Post Count
+  app.post("/send-new-post", (req, res) => {
+    io.socket.broadcast.emit("new-post", {
+      markup: req.body.post_markup,
     });
 
     res.send();

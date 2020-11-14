@@ -43,6 +43,7 @@ socket.connect((io) => {
     io.socket.broadcast.emit("like-count", {
       postId: req.body.post_id,
       likesCount: req.body.likes_count,
+      area: req.body.area,
     });
 
     res.send();
@@ -52,6 +53,7 @@ socket.connect((io) => {
   app.post("/send-new-post", (req, res) => {
     io.socket.broadcast.emit("new-post", {
       markup: req.body.post_markup,
+      area: req.body.area,
     });
 
     res.send();

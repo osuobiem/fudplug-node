@@ -18,13 +18,13 @@ app.use(bodyParser.json());
 const PORT = process.env.PORT || 3000;
 
 // Connect to socket
-let io = new Socket(http);
-io.connect((sock) => {
+let socket = new Socket(http);
+socket.connect((io) => {
   // Send request to save new socket id
-  sock.socket.on("save-id", (username) => {
+  io.socket.on("save-id", (username) => {
     request.get(
       {
-        url: `${process.env.MAIN_SERVER}/socket/save-id/${username}/${sock.socket.id}`,
+        url: `${process.env.MAIN_SERVER}/socket/save-id/${username}/${io.socket.id}`,
       },
       (err, res, body) => {
         if (err) {
@@ -38,7 +38,7 @@ io.connect((sock) => {
 
   // Socket Routes
   app.post("/send-likes-count", (req, res) => {
-    sock.socket.broadcast.emit("like-count", {
+    io.socket.broadcast.emit("like-count", {
       postId: req.body.post_id,
       likesCount: req.body.likes_count,
     });

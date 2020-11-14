@@ -4,7 +4,7 @@
 require("dotenv").config();
 
 // Require useful modules
-const app = require("express");
+const app = require("express")();
 const http = require("http").createServer(app);
 const bodyParser = require("body-parser");
 const request = require("request");
@@ -12,11 +12,7 @@ const request = require("request");
 // Require in-app modules
 const Socket = require("./lib/socket");
 
-// Initialize router object
-const router = app.Router();
-
-app().use(bodyParser.json());
-app().use(router);
+app.use(bodyParser.json());
 
 // Set app PORT
 const PORT = process.env.PORT || 3000;
@@ -38,6 +34,16 @@ io.connect((sock) => {
         console.log(body);
       }
     );
+  });
+
+  // Socket Routes
+  app.post("/send-likes-count", (req, res) => {
+    sock.socket.broadcast.emit("like-count", {
+      postId: req.body.post_id,
+      likesCount: req.body.likes_count,
+    });
+
+    res.send();
   });
 });
 

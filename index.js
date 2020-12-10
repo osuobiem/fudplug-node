@@ -58,6 +58,43 @@ socket.connect((io) => {
 
     res.send();
   });
+
+  // Comments Count Endpoint
+  app.post("/send-comments-count", (req, res) => {
+    let newComment = req.body.new_comment ?? '';
+    io.socket.broadcast.emit("comment-count", {
+      postId: req.body.post_id,
+      commentsCount: req.body.comments_count,
+      area: req.body.area,
+      newComment
+    });
+
+    res.send();
+  });
+
+  // New Comment Endpoint
+  app.post("/send-new-comment", (req, res) => {
+    io.socket.broadcast.emit("new-comment", {
+      newComment: req.body.new_comment,
+      postId: req.body.post_id,
+      commentor: req.body.commentor_socket,
+      area: req.body.area
+    });
+
+    res.send();
+  });
+
+  // Delete Comment Endpoint
+  app.post("/delete-comment", (req, res) => {
+    io.socket.broadcast.emit("delete-comment", {
+      commentId: req.body.comment_id,
+      postId: req.body.post_id,
+      commentor: req.body.commentor_socket,
+      area: req.body.area
+    });
+
+    res.send();
+  });
 });
 
 // Start application server

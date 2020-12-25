@@ -95,6 +95,16 @@ socket.connect((io) => {
 
     res.send();
   });
+
+  // Send Notification Endpoint
+  app.post("/notify", (req, res) => {
+    io.socket.broadcast.emit("notify", {
+      owner: req.body.owner_socket,
+      content: req.body.content
+    });
+
+    res.send();
+  });
 });
 
 // Start application server

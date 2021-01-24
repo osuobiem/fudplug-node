@@ -108,6 +108,11 @@ socket.connect((io) => {
 });
 
 // Start application server
-http.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
-});
+if(process.env.NODE_ENV == 'development') {
+  http.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+  });
+}
+else {
+  http.listen();
+}

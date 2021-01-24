@@ -61,7 +61,7 @@ socket.connect((io) => {
 
   // Comments Count Endpoint
   app.post("/send-comments-count", (req, res) => {
-    let newComment = req.body.new_comment ?? '';
+    let newComment = req.body.new_comment ? req.body.new_comment : '';
     io.socket.broadcast.emit("comment-count", {
       postId: req.body.post_id,
       commentsCount: req.body.comments_count,

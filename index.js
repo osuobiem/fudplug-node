@@ -105,6 +105,15 @@ socket.connect((io) => {
 
     res.send();
   });
+
+  // Delete Post Endpoint
+  app.post("/delete-post", (req, res) => {
+    io.socket.broadcast.emit("delete-post", {
+      postId: req.body.post_id
+    });
+
+    res.send();
+  });
 });
 
 // Start application server

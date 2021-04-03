@@ -8,14 +8,40 @@ const app = require("express")();
 const http = require("http").createServer(app);
 const bodyParser = require("body-parser");
 const request = require("request");
+const cors = require('cors')
 
 // Require in-app modules
 const Socket = require("./lib/socket");
+const WebPush = require("./lib/webpush.js");
 
+app.use(cors())
 app.use(bodyParser.json());
 
 // Set app PORT
 const PORT = process.env.PORT || 3000;
+
+// Webpush
+let webpush = new WebPush();
+
+/** Webpush Routes */
+
+// Send VAPID Public key
+app.get("/sw/get-pvk", (req, res) => {
+  res.send(process.env.VAPID_PUBLIC_KEY);
+})
+
+// Send Push Notification
+app.post("/sw/send-notification", (req, res) => {
+  const subscription = req.body.subscription;
+  const payload = req.body.payload;
+  const options = {
+    TTL: req.body.ttl
+  };
+
+  setTimeout(() => {
+    webpush.send(subscription, payload, options, res)
+  }, 3000)
+})
 
 // Connect to socket
 let socket = new Socket(http);
@@ -36,7 +62,7 @@ socket.connect((io) => {
     );
   });
 
-  // Socket Routes
+  /** Socket Routes */
 
   // Likes Count Endpoint
   app.post("/send-likes-count", (req, res) => {
@@ -100,7 +126,8 @@ socket.connect((io) => {
   app.post("/notify", (req, res) => {
     io.socket.broadcast.emit("notify", {
       owner: req.body.owner_socket,
-      content: req.body.content
+      content: req.body.content,
+      content_nmu: req.body.content_nmu
     });
 
     res.send();

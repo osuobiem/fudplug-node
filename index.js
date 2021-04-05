@@ -33,7 +33,7 @@ app.get("/sw/get-pvk", (req, res) => {
 // Send Push Notification
 app.post("/sw/send-notification", (req, res) => {
   const subscription = req.body.subscription;
-  const payload = req.body.payload;
+  const payload = JSON.stringify(req.body.payload);
   const options = {
     TTL: req.body.ttl
   };
@@ -127,7 +127,8 @@ socket.connect((io) => {
     io.socket.broadcast.emit("notify", {
       owner: req.body.owner_socket,
       content: req.body.content,
-      content_nmu: req.body.content_nmu
+      content_nmu: req.body.content_nmu,
+      url: req.body.url
     });
 
     res.send();
